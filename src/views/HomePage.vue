@@ -15,7 +15,7 @@
         <v-card
             class="mx-auto"
             max-width="600"
-            min-height="400"
+            min-height="420"
         >
             <div class="card-header">
                 <div class="card-title">
@@ -51,6 +51,9 @@
             </div>
             <div class="card-footer">
                 <v-btn depressed large min-width="400" color="primary" :loading="registerLoading" @click="register()">Register</v-btn>
+                <div v-if="isAlreadyRegister" style="margin-top:12px">
+                    <v-btn text small color="warning" @click="$router.push({ name: 'Verification' }).catch(err => {})">Masuk ke halaman verifikasi</v-btn>
+                </div>
             </div>
         </v-card>
         </v-col>
@@ -61,7 +64,7 @@
         <v-card
             class="mx-auto"
             max-width="600"
-            min-height="400"
+            min-height="420"
         >
             <div class="card-header">
                 <div class="card-title">
@@ -121,7 +124,8 @@ import store from '../store'
       color: null,
       text: '',
       showPassword: false,
-      registerLoading: false
+      registerLoading: false,
+      isAlreadyRegister: false
     }),
     methods:{
       getOperatingSystem() {
@@ -144,11 +148,14 @@ import store from '../store'
         this.$http
         .post(uri, this.form)
         .then(response => {
+            store.commit('deleteRegister')
             this.registerLoading = false
             this.snackbar = true; //mengaktifkan snackbar
             this.color = 'green'; //memberi warna snackbar
             this.text = 'Berhasil Login'; //memasukkan pesan ke snackbar
             localStorage.setItem('user_id',response.data.data.user.id)
+            localStorage.setItem('phone',response.data.data.user.phone)
+            store.commit('storeRegister')
             this.$router.push({ name : 'Verification'})
         })
         .catch(error => {
@@ -163,6 +170,9 @@ import store from '../store'
     mounted(){
       this.form.device_type=this.getOperatingSystem()
       this.form.device_token=btoa( Math.random() + navigator.userAgent + Date() );
+      if(localStorage.getItem('user_id')!=null){
+          this.isAlreadyRegister=true
+      }
   },
   }
 </script>
