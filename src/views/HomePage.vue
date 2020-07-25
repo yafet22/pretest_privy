@@ -245,6 +245,6 @@ import store from '../store'
       if(localStorage.getItem('user_id')!=null){
           this.isAlreadyRegister=true
       }
-  },
+    },
   }
 </script>
