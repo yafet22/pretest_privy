@@ -23,14 +23,8 @@
                 </div>
             </div>
             <div class="card-body">
+                <v-phone-input @on-change="handleOnChange"></v-phone-input>
                 <v-text-field
-                    v-model="form.phone"
-                    label="No Telepon"
-                    placeholder="No Telepon"
-                    outlined
-                    dense
-                ></v-text-field>
-                    <v-text-field
                     v-model="form.password"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showPassword ? 'text' : 'password'"
@@ -72,13 +66,9 @@
                 </div>
             </div>
             <div class="card-body">
+                <v-phone-input @on-change="handleOnChange"></v-phone-input>
                 <v-text-field
-                    label="No Telepon"
-                    placeholder="No Telepon"
-                    outlined
-                    dense
-                ></v-text-field>
-                    <v-text-field
+                    v-model="formLogin.password"
                     :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     :type="showPassword ? 'text' : 'password'"
                     label="Password"
@@ -90,7 +80,7 @@
                 ></v-text-field>
             </div>
             <div class="card-footer">
-                <v-btn depressed large min-width="400" color="success">Login</v-btn>
+                <v-btn depressed large min-width="400" :loading="loginLoading" @click="login()" color="success">Login</v-btn>
             </div>
         </v-card>
         </v-col>
@@ -109,15 +99,27 @@
 </template>
 
 <script>
+import PhoneInput from '../components/PhoneInput';
 import store from '../store'
   export default {
+    name: 'Home',
+    components: {
+        'v-phone-input': PhoneInput,
+    },
     data:() =>({
       form:{
         phone: null,
         password: null,
         country: null,
-        latlong: null,
-        device_token: 12233,
+        latlong: '',
+        device_token: null,
+        device_type: null,
+      },
+      formLogin:{
+        phone: null,
+        password: null,
+        latlong: '',
+        device_token: null,
         device_type: null,
       },
       snackbar: false,
@@ -125,9 +127,37 @@ import store from '../store'
       text: '',
       showPassword: false,
       registerLoading: false,
-      isAlreadyRegister: false
+      loginLoading: false,
+      isAlreadyRegister: false,
+      location:null,
+      device_token:null,
+      device_type:null,
+      phone:null
     }),
     methods:{
+      handleOnChange(value) {
+          
+        this.phone = value
+      },
+      clearInputRegister(){
+          this.form = {
+            phone: null,
+            password: null,
+            country: null,
+            latlong: '',
+            device_token: null,
+            device_type: null,
+        }
+      },
+      clearInputLogin(){
+          this.formLogin = {
+            phone: null,
+            password: null,
+            latlong: '',
+            device_token: null,
+            device_type: null,
+        }
+      },
       getOperatingSystem() {
         var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -142,8 +172,23 @@ import store from '../store'
 
         return 2;
       },
+      getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(this.showPosition);
+        }else {
+            return null
+        }
+      },
+      showPosition(position) {
+          this.location = position.coords.latitude + "," + position.coords.longitude
+        
+      },
       register(){
         let uri = this.$apiurl+ '/register'
+        this.form.phone = this.phone
+        this.form.device_type = this.device_type
+        this.form.device_token = this.device_token
+        this.form.latlong = this.location
         this.registerLoading = true
         this.$http
         .post(uri, this.form)
@@ -156,6 +201,7 @@ import store from '../store'
             localStorage.setItem('user_id',response.data.data.user.id)
             localStorage.setItem('phone',response.data.data.user.phone)
             store.commit('storeRegister')
+            this.clearInputRegister()
             this.$router.push({ name : 'Verification'})
         })
         .catch(error => {
@@ -165,11 +211,38 @@ import store from '../store'
           this.color = 'red'
           this.load = false
         })
+      },
+      login(){
+        let uri = this.$apiurl+ '/oauth/sign_in'
+        this.formLogin.phone = this.phone
+        this.formLogin.device_type = this.device_type,
+        this.formLogin.device_token = this.device_token,
+        this.formLogin.latlong = this.location
+        this.loginLoading = true
+        this.$http
+        .post(uri, this.formLogin)
+        .then(response => {
+            store.commit('loginUser')
+            localStorage.removeItem('user_id')
+            localStorage.removeItem('phone')
+            store.commit('deleteRegister')
+            localStorage.setItem('token', response.data.data.user.access_token)
+            this.loginLoading = false
+            this.$router.push({ name : 'Dashboard'})
+        })
+        .catch(error => {
+          this.loginLoading = false
+          this.snackbar = true
+          this.text = error.response.data.error.errors[0]
+          this.color = 'red'
+          this.load = false
+        })
       }
     },
     mounted(){
-      this.form.device_type=this.getOperatingSystem()
-      this.form.device_token=btoa( Math.random() + navigator.userAgent + Date() );
+      this.getLocation()
+      this.device_type = this.getOperatingSystem(),
+      this.device_token = btoa( Math.random() + navigator.userAgent + Date() )
       if(localStorage.getItem('user_id')!=null){
           this.isAlreadyRegister=true
       }

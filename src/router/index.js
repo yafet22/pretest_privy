@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
     next({ name: 'Home' })
     return
   }
-  if ((to.name === 'login') && store.state.isLoggedIn) {
+  if ((to.name === 'Home') && store.state.isLoggedIn) {
     next({ name: 'Dashboard' })
     return
   }

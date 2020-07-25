@@ -85,11 +85,9 @@ export default {
   }),
   methods: {
     handleOnComplete(value) {
-      console.log('OTP completed: ', value);
       this.form.otp_code = value
     },
     handleOnChange(value) {
-      console.log('OTP changed: ', value);
       this.form.otp_code = value
     },
     handleClearInput(ref) {
