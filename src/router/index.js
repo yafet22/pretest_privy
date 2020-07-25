@@ -8,6 +8,9 @@ import VueRouter from 'vue-router'
 function loadView(view) {
   return () => import(/* webpackChunkName: "view-[request]" */ `../views/${view}.vue`)
 }
+function loadDashboardMenu(view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `../views/dashboard-menu/${view}.vue`)
+}
 
 Vue.use(VueRouter)
 
@@ -24,9 +27,25 @@ Vue.use(VueRouter)
   },
   {
     path: '/dashboard',
-    name: 'Dashboard',
     component: loadView('Dashboard'),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    children: [
+      {
+        name: 'Dashboard',
+        path: '/',
+        component: loadDashboardMenu('Main')
+      },
+      {
+        name: 'CarrerEdu',
+        path: '/carrer-edu',
+        component: loadDashboardMenu('CarrerEdu')
+      },
+      {
+        name: 'Message',
+        path: '/message',
+        component: loadDashboardMenu('Message')
+      }
+    ]
   },
 ]
 

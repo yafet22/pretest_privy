@@ -44,7 +44,7 @@
                 ></v-text-field>
             </div>
             <div class="card-footer">
-                <v-btn depressed large min-width="400" color="primary" :loading="registerLoading" @click="register()">Register</v-btn>
+                <v-btn depressed large block color="primary" :loading="registerLoading" @click="register()">Register</v-btn>
                 <div v-if="isAlreadyRegister" style="margin-top:12px">
                     <v-btn text small color="warning" @click="$router.push({ name: 'Verification' }).catch(err => {})">Masuk ke halaman verifikasi</v-btn>
                 </div>
@@ -80,7 +80,7 @@
                 ></v-text-field>
             </div>
             <div class="card-footer">
-                <v-btn depressed large min-width="400" :loading="loginLoading" @click="login()" color="success">Login</v-btn>
+                <v-btn depressed large block :loading="loginLoading" @click="login()" color="success">Login</v-btn>
             </div>
         </v-card>
         </v-col>
@@ -135,8 +135,7 @@ import store from '../store'
       phone:null
     }),
     methods:{
-      handleOnChange(value) {
-          
+      handleOnChange(value) {    
         this.phone = value
       },
       clearInputRegister(){
