@@ -44,6 +44,11 @@ Vue.use(VueRouter)
         name: 'Message',
         path: '/message',
         component: loadDashboardMenu('Message')
+      },
+      {
+        name: 'Profile',
+        path: '/profile',
+        component: loadDashboardMenu('Profile')
       }
     ]
   },

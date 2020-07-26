@@ -1,13 +1,13 @@
 <template>
     <div style="text-align:center">
         <div id="menu-button">
-            <v-btn x-large color="blue-grey lighten-5" min-width="280" depressed>Profile</v-btn>
+            <v-btn x-large outlined color="pink lighten-2" min-width="280" depressed  @click="$router.push({ name: 'Profile' }).catch(err => {})">Profile</v-btn>
         </div>
         <div id="menu-button">
-            <v-btn x-large color="blue-grey lighten-5" min-width="280" depressed @click="$router.push({ name: 'CarrerEdu' }).catch(err => {})">Carrer & Education</v-btn>
+            <v-btn x-large outlined color="pink lighten-2" min-width="280" depressed @click="$router.push({ name: 'CarrerEdu' }).catch(err => {})">Carrer & Education</v-btn>
         </div>
         <div id="menu-button">
-            <v-btn x-large color="blue-grey lighten-5" min-width="280" depressed @click="$router.push({ name: 'Message' }).catch(err => {})">Message</v-btn>
+            <v-btn x-large outlined color="pink lighten-2" min-width="280" depressed @click="$router.push({ name: 'Message' }).catch(err => {})">Message</v-btn>
         </div>
         <div id="menu-button">
             <v-btn x-large color="red lighten-1" min-width="280" depressed dark @click="logout()">Logout</v-btn>

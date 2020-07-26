@@ -33,6 +33,9 @@
                             <p>{{ "Lulus : " + data.user.education.graduation_time }}</p>
                             <v-btn large depressed color="pink lighten-5" light @click="openEducationDialog()">Update</v-btn>
                         </div>
+                        <div v-else-if="loading" class="card-body-center">
+                            <h1>Loading..</h1>
+                        </div>
                         <div v-else class="card-body-center">
                             <p>Belum terdapat data</p>
                             <v-btn large depressed color="pink lighten-5" light @click="openEducationDialog()">Update</v-btn>
@@ -66,6 +69,9 @@
                             <h2>{{ data.user.career.position }}</h2>
                             <p>{{ "Mulai : "  + data.user.career.starting_from + " | " + "Akhir : " + data.user.career.ending_in }}</p>
                             <v-btn large depressed color="cyan lighten-5" light @click="openCareerDialog()">Update</v-btn>
+                        </div>
+                        <div v-else-if="loading" class="card-body-center">
+                            <h1>Loading..</h1>
                         </div>
                         <div v-else class="card-body-center">
                             <p>Belum terdapat data</p>
@@ -233,6 +239,7 @@ export default {
             position: null
        },
        education :{},
+       loading : false,
        data : {
            user : {
             education :{
@@ -257,18 +264,18 @@ export default {
   },
   methods:{
       getData(){
+        this.loading = true
         var uri = this.$apiurl + '/profile/me'
             this.$http.get(uri,config).then(response =>{
                 this.data=response.data.data;
+                this.loading = false
             }
         )
       },
       openEducationDialog(){
-          this.formEdu=this.data.user.education
           this.dialogEducation = true
       },
       openCareerDialog(){
-          this.formCareer=this.data.user.career
           this.dialogCareer = true
       },
       insertEducation(){
