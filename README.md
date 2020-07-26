@@ -1,5 +1,7 @@
 # pretest_privy
 
+Pretest ini dikerjakan menggunakan framework Vue-js
+
 ## Project setup
 ```
 npm install
