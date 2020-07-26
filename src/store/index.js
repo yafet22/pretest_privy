@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isLoggedIn: !!localStorage.getItem('token'),
-    isAlreadyRegister: !!localStorage.getItem('user_id')
+    isAlreadyRegister: false
   },
   mutations: {
     loginUser (state) {

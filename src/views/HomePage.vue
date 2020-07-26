@@ -222,8 +222,6 @@ import store from '../store'
         .post(uri, this.formLogin)
         .then(response => {
             store.commit('loginUser')
-            localStorage.removeItem('user_id')
-            localStorage.removeItem('phone')
             store.commit('deleteRegister')
             localStorage.setItem('token', response.data.data.user.access_token)
             this.loginLoading = false

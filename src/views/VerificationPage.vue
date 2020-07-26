@@ -101,8 +101,6 @@ export default {
         .post(uri, this.form)
         .then(response => {
             store.commit('loginUser')
-            localStorage.removeItem('user_id')
-            localStorage.removeItem('phone')
             store.commit('deleteRegister')
             localStorage.setItem('token', response.data.data.user.access_token)
             this.loading = false
